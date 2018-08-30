@@ -5,7 +5,7 @@ library(stringr)
 setwd("~/Documents/UCSD/FALL17/MGTA452 Collecting:Analyzing Large Data/datasets/h1b")
 h1b_kaggle <- read_csv("data/h1b_kaggle.csv")
 
-# Data pre-processing ----------------------------------------------------
+# Data pre-processing 
 
 # split worksite column to city/state
 h1b <- separate(h1b_kaggle, WORKSITE, into = c("CITY","STATE"), sep = ",")
@@ -28,11 +28,6 @@ h1b$JOB_TITLE <- ifelse(grepl("SOFTWARE", h1b$JOB_TITLE), "SOFTWARE DEVELOPMENT"
                                              ifelse(grepl("PROFESSOR", h1b$JOB_TITLE) | h1b$JOB_TITLE == "RESEARCH ASSOCIATE", 
                                                     "PROFESSOR/RESEARCHER",
                                                     ifelse(h1b$JOB_TITLE == "ACCOUNTANT", "ACCOUNTANT", "OTHERS"))))))
-# group by job position
-#h1b %>% 
-#  group_by(JOB_TITLE) %>% 
-#  summarize(count = n()) %>% 
-#  arrange(desc(count)) 
 
 # Condense dataset by removing all NAs
 h1b <- h1b  %>%
@@ -59,12 +54,6 @@ states = c("ALABAMA", "ARIZONA", "ARKANSAS", "CALIFORNIA", "COLORADO", "CONNECTI
            "NEBRASKA", "NEVADA", "NEW HAMPSHIRE", "NEW JERSEY", "NEW MEXICO", "NEW YORK", "NORTH CAROLINA", "NORTH DAKOTA",
            "OHIO", "OKLAHOMA", "OREGON", "PENNSYLVANIA", "RHODE ISLAND", "SOUTH CAROLINA", "SOUTH DAKOTA" , "TENNESSEE", 
            "TEXAS", "UTAH", "VERMONT", "VIRGINIA", "WASHINGTON", "WEST VIRGINIA", "WISCONSIN","WYOMING")
-
-#tolower(states)
-# states = as.character(unique(h1b_count$STATE)[order(unique(h1b_count$STATE))])
-# remove <- c ("HAWAII", "ALASKA")
-# states = states[! states %in% remove]
-# jobs = as.character(unique(h1b_count$JOB_TITLE))
 
 jobs = c("BUSINESS ANALYST", "CONSULTANT", "DATABASE/DATA SCIENTIST/ANALYST", "OTHERS", "PROFESSOR/RESEARCHER",
          "SOFTWARE DEVELOPMENT", "ACCOUNTANT" )
@@ -160,7 +149,6 @@ server <- shinyServer(function(input, output){
   output$map <- renderPlot({
     all_states <- map_data('state') # import US state map (49 states)
     toupper(all_states$region) # added
-    #all_states <- subset(all_states, region %in% tolower(unique(data_map()$STATE))) ???
     locations = data_map() %>%
       group_by(lon, lat) %>%
       dplyr::summarise(TotalNumber = n(),
